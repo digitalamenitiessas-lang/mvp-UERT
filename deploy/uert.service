@@ -1,0 +1,30 @@
+# /etc/systemd/system/uert.service
+#
+# MVP UERT (Next.js) en el VPS compartido. Mismo patrón que citify.service:
+# `next start` detrás del Caddy nativo, con prioridad baja para no robarle CPU
+# a los bots y las otras apps (1 núcleo para ~17 servicios).
+[Unit]
+Description=MVP UERT (Next.js) — gestión de denuncias, demo
+After=network-online.target postgresql.service
+Wants=network-online.target
+Requires=postgresql.service
+
+[Service]
+Type=simple
+User=uert
+Group=uert
+WorkingDirectory=/home/uert/mvp-UERT
+EnvironmentFile=/etc/uert/app.env
+Environment=PATH=/opt/node22/bin:/usr/local/bin:/usr/bin:/bin
+Environment=TZ=America/Argentina/Buenos_Aires
+ExecStart=/opt/node22/bin/node /home/uert/mvp-UERT/node_modules/next/dist/bin/next start -H 127.0.0.1 -p 3190
+Restart=always
+RestartSec=5
+Nice=10
+CPUWeight=50
+IOWeight=50
+# Techo de memoria: si algo se desboca, muere esta app y no el resto.
+MemoryMax=768M
+
+[Install]
+WantedBy=multi-user.target

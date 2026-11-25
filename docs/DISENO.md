@@ -1,0 +1,109 @@
+# MVP UERT · Diseño
+
+MVP del sistema de gestión de denuncias de la **Unidad Ejecutora de Riesgos del Trabajo (UERT)** de Santiago del Estero. Su objetivo es **mostrar**: que la UERT pueda recorrer el circuito completo de una denuncia cambiando de rol, incluyendo la nueva denuncia de Enfermedad Profesional (FODEP) y la comunicación con la SRT. Los datos son ficticios y la SRT está simulada.
+
+Fuentes: relevamiento de Informática de Casa de Gobierno (RF-01 a RF-67, RNF-01 a RNF-10), proyecto de Resolución SRT de EP y sus anexos, WS FODEP v1.0, Sistema de Intercambio FODEP v0.2.
+
+## Roles (un usuario de demo por rol)
+
+| Rol | Submódulo | Qué hace | Inicio |
+| --- | --- | --- | --- |
+| `mesa_entrada` | 1 | Carga la denuncia (formulario único con solapas), documentación, constancia, verificación de relación laboral, pase a médica, reingresos | `/mesa` |
+| `medico` | 1 | Evalúa cada diagnóstico (CIE-10, listado, lesiones, zonas), citaciones (72 h, reiteración, caducidad), baja laboral, reencuadre AT→EP, pase a legal | `/medica` |
+| `legal` | 2 | 10 días hábiles (+ prórroga) para aceptar o rechazar **cada diagnóstico** (R/D/E/P/L), cierra el dictamen, notificación de rechazo | `/legal` |
+| `seguimiento` | 3 | Licencias activas: presentaciones y vencimientos, intercurrencias, alta, presentación ante Comisión Médica | `/seguimiento` |
+| `direccion` | — | Tablero: estados, vencimientos, comunicaciones SRT | `/direccion` |
+| `admin` | — | Usuarios, catálogos, reiniciar la demo, lotes de intercambio | `/admin` |
+
+No hay login: se elige el usuario en `/ingresar` y se cambia con el selector "Viendo como". Cookie `uert_demo_usuario`.
+
+## Circuito
+
+```
+recepcion ──(verificar + documentación + [EP: alta FODEP])──▶ evaluacion_medica ──(todo evaluado + baja definida)──▶ dictamen_legal
+    │                                                            │                                                    │
+    └──▶ desistido (falta de cobertura / relación no corroborada)  └──▶ desistido (2ª inasistencia = caducidad)           ├──▶ licencia_activa ──(alta)──▶ alta ──(reingreso, sufijo+1)──▶ recepcion
+                                                                                                                     ├──▶ sin_baja ──(presentación CM)──▶ cerrado
+                                                                                                                     └──▶ rechazado (todos los diagnósticos rechazados)
+```
+
+- Cada **diagnóstico** tiene estado propio: `invocado → evaluado → aceptado | rechazado` (o `desistido`).
+- Intercurrencia: siniestro nuevo durante una licencia activa, vinculado (`origen_id`, `es_intercurrencia`), va directo a `evaluacion_medica`.
+- Reingreso: mismo número, sufijo +1 (`2026-000012-01`), vuelve a `recepcion`.
+- Permisos por rol y estado: `src/lib/dominio/permisos.ts` (`puede(rol, accion, estado)`).
+
+## Reglas implementadas (dónde)
+
+| Regla | Dónde |
+| --- | --- |
+| Número de siniestro 20 posiciones, sufijo de reingreso (RF-23/24) | `lib/dominio/numeracion.ts` |
+| Siniestros abiertos (nuevo + sistema actual) al cargar (RF-25 a RF-28) | `operaciones/denuncias.ts` `siniestrosAbiertos` |
+| Documentación por tipo de denuncia | `lib/dominio/documentos.ts` |
+| Configuración: relación laboral; si no, Desistido e informe a SRT (48 h) | `operaciones/recepcion.ts` |
+| Hasta 10 diagnósticos EP con agente causante (FO23) | `esquemas.ts`, `operaciones/medica.ts` |
+| Citación ≥ 72 h, reiteración única, caducidad (Anexo II 1.6 y 3.3) | `operaciones/medica.ts` |
+| Inicio de inasistencia ≥ siniestro + 1 día (RF-20) | `operaciones/medica.ts` `definirBaja` |
+| Plazo legal 10 hábiles + prórroga 20 (RF-10, a confirmar) | `operaciones/legal.ts` |
+| Motivos R/D/E/P/L; E exige CYMAT, P exige estudios (RF-47 a RF-49) | `operaciones/legal.ts` |
+| Sin baja: 20 días hábiles para la Comisión Médica (RF-51) | `operaciones/legal.ts` |
+| Alta = cese ILT, tope 365 días (RF-21/22) | `operaciones/seguimiento.ts` |
+| WS FODEP simulado con errores FOxx (RF-52 a RF-63) | `lib/srt/fodep.ts`, `operaciones/srt.ts` |
+| Archivos .AD/.AL/.AZ (RF-64 a RF-67) | `lib/srt/intercambio.ts`, `operaciones/intercambio.ts` |
+| Búsqueda unificada nuevo + sistema actual por año (RF-02) | `lib/datos/busqueda.ts` |
+
+## Arquitectura
+
+Next.js 16.4 (App Router, Turbopack) · React 19 · TypeScript · Tailwind v4 · shadcn/ui (Radix, preset Nova) · react-hook-form + zod 4 · PostgreSQL (`pg`) en la VPS y **PGlite** embebido en desarrollo y tests.
+
+```
+db/migraciones/*.sql        esquema (schema "uert")
+db/catalogos/*.json         tablas de referencia de la SRT (CIE-10, agentes, lesiones, zonas, localidades SDE…)
+src/lib/dominio/            vocabulario y reglas puras (constantes, fechas/plazos, validaciones, permisos, documentos)
+src/lib/srt/                FODEP simulado y archivos de intercambio (puro)
+src/lib/db/                 conexión (pg o PGlite), migraciones
+src/lib/datos/              LECTURAS: listarExpedientes, obtenerFicha, plazosDe, listarCitaciones, buscarIncidentes, obtenerTablero, catálogos, SRT
+src/lib/operaciones/        ESCRITURAS con reglas de negocio (reciben Ctx = { db, usuario, ahora })
+src/lib/demo/               datos de la demo (se arman con las operaciones, fechas relativas a hoy)
+src/app/acciones.ts         Server Functions que llaman las pantallas → ResultadoAccion
+src/app/(app)/…             pantallas con la barra de la aplicación
+src/app/imprimir/…          constancias y notificaciones para imprimir
+src/components/ui/          shadcn (no modificar)
+src/components/comun/       piezas compartidas (ver abajo)
+src/components/<área>/      componentes de cada área
+tests/                      vitest (dominio y flujos sobre PGlite en memoria)
+```
+
+### Convenciones
+
+- **Todo en español** (código del dominio, textos). Voseo en la interfaz ("Elegí", "Cargá").
+- **Cache Components desactivado** (igual que Oakland): render dinámico por pedido. `params`/`searchParams` son Promises (`await props.params`). El middleware se llama `src/proxy.ts`.
+- Lecturas en Server Components con `const db = await getDb()` + funciones de `lib/datos`. Escrituras solo vía `src/app/acciones.ts` (devuelven `{ ok, datos } | { ok: false, error, detalles }`) y `revalidatePath("/", "layout")`.
+- Usuario: `await requerirUsuario()` (`lib/sesion.ts`). Permisos en la interfaz: `puede(usuario.rol, "accion", estado)`.
+- Fechas sin hora = `'YYYY-MM-DD'`; mostrar con `formatoFecha`, momentos con `formatoFechaHora` (hora de Argentina). Plazos con `plazosDe()` + `<PlazoBadge>`.
+- Formularios: `react-hook-form` + `zodResolver` con los esquemas de `lib/esquemas.ts` cuando existen; componentes `Field*` de `components/ui/field.tsx`; fechas con `<Input type="date">` (permite escribir y elegir, RNF-08).
+- Llamar acciones desde el cliente con `useAccion()` (`components/comun/use-accion.ts`) y mostrar errores con `<ErrorAccion>`.
+
+### Piezas compartidas (`src/components/comun`)
+
+| Pieza | Uso |
+| --- | --- |
+| `EncabezadoPagina`, `Seccion`, `Dato`, `Datos` | Estructura de páginas y fichas |
+| `TablaExpedientes` | Tabla de bandeja (servidor), con plazo más urgente y columnas extra |
+| `EstadoBadge`, `TipoBadge`, `EstadoDiagnosticoBadge`, `EstadoCitacionBadge`, `PlazoBadge`, `RolBadge`, `Simulado`, `Etiqueta` | Etiquetas |
+| `Circuito` | Indicador de etapa del expediente |
+| `CampoCatalogo` | Combo con buscador sobre catálogos SRT (`/api/catalogos/[catalogo]?q=`) |
+| `SelectorArchivos` | Elegir archivos en varias tandas (se registran nombre y tamaño; el aviso de la demo, una vez por pantalla) |
+| `AdjuntarDocumento` | Adjuntar uno o varios archivos al expediente, desde cualquier área con permiso |
+| `useAccion`, `ErrorAccion` | Ejecutar acciones con espera, aviso y errores |
+| `PanelProps`, `PanelArea` | Props y marco común (encabezado con el color del rol) de los paneles de acciones de la ficha |
+| `TarjetaIndicador`, `GrillaIndicadores` | Indicadores de las bandejas y el tablero (el color va en el ícono, nunca en el número) |
+| `Hoja`, `Membrete`, `BarraImpresion`, `PieDocumento`, `BotonImprimir` | Documentos para imprimir (constancia, citación, notificación de rechazo) |
+| `EsqueletoPagina` | Esqueleto de carga de bandejas, tablero, SRT, Administración, listado y búsqueda |
+
+## Pendiente de confirmar con la UERT / SRT
+
+- CART y prefijo del número de siniestro (tomados del sistema anterior: `00050` / `00050024`); continuidad de la numeración del sistema actual.
+- Tabla oficial de estados FODEP, relación CIE-10/agente causante (FO22), WSDL y certificado.
+- Documentación de in itinere, reingresos e intercurrencias; prórroga legal (20 días); anticipación y medio de las alertas (RF-15).
+- Feriados trasladables (solo se cargaron los de fecha fija).
+- Diferencia en el documento de Intercambio v0.2: los ejemplos muestran Nro. de siniestro en .AL/.AZ y la definición de campos no.
