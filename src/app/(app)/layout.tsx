@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { FlaskConicalIcon, ShieldCheckIcon } from "lucide-react";
+import { FlaskConicalIcon } from "lucide-react";
 import { Buscador } from "@/components/app/buscador";
+import { Marca, PieSDE } from "@/components/app/marca";
 import { Navegacion } from "@/components/app/navegacion";
 import { SelectorUsuario } from "@/components/app/selector-usuario";
 import { getDb } from "@/lib/db";
@@ -18,26 +19,28 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         <FlaskConicalIcon className="size-3.5" />
         Demostración con datos ficticios · Las comunicaciones con la SRT son simuladas · Hoy es {formatoFechaLarga(hoy())}
       </div>
-      <header className="no-imprimir sticky top-0 z-30 border-b bg-background/95 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-2.5">
-          <div className="flex items-center gap-3">
-            <Link href={ROL_INFO[usuario.rol].inicio} className="flex items-center gap-2">
-              <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <ShieldCheckIcon className="size-4.5" />
-              </span>
-              <span className="leading-tight">
-                <span className="block text-sm font-semibold">UERT</span>
-                <span className="block text-xs text-muted-foreground">Gestión de denuncias</span>
-              </span>
+      {/* Barra institucional azul con el logo de la Provincia, como en sde.gob.ar; debajo, las secciones. */}
+      <header className="no-imprimir sticky top-0 z-30 shadow-sm">
+        <div className="bg-primary text-primary-foreground">
+          <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5">
+            <Link
+              href={ROL_INFO[usuario.rol].inicio}
+              aria-label="UERT · Ir al inicio"
+              className="rounded-sm focus-visible:ring-3 focus-visible:ring-white/60 focus-visible:outline-none"
+            >
+              <Marca sobre="azul" compactaEnMovil />
             </Link>
-            <div className="ml-auto flex items-center gap-2">
+            {/* El buscador y el selector son blancos: que no hereden el texto blanco de la barra. */}
+            <div className="ml-auto flex items-center gap-2 text-foreground">
               <div className="hidden md:block">
                 <Buscador />
               </div>
               <SelectorUsuario actual={usuario} usuarios={usuarios} />
             </div>
           </div>
-          <div className="flex items-center justify-between gap-3">
+        </div>
+        <div className="border-b bg-background/95 backdrop-blur">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-1.5">
             <Navegacion rol={usuario.rol} />
             <span className="hidden text-xs text-muted-foreground lg:block">
               {usuario.nombre} · {usuario.cargo}
@@ -46,9 +49,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
         </div>
       </header>
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
-      <footer className="no-imprimir border-t bg-background py-3 text-center text-xs text-muted-foreground">
-        MVP · Unidad Ejecutora de Riesgos del Trabajo · Provincia de Santiago del Estero
-      </footer>
+      <PieSDE />
     </div>
   );
 }

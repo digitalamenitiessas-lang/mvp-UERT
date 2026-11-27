@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeftIcon, FolderSearchIcon, ShieldCheckIcon } from "lucide-react";
+import { ArrowLeftIcon, FolderSearchIcon } from "lucide-react";
+import { Marca } from "@/components/app/marca";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = { title: "Página no encontrada" };
@@ -9,14 +10,8 @@ export const metadata: Metadata = { title: "Página no encontrada" };
 export default function NoEncontrado() {
   return (
     <main className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-6 px-4 py-16 text-center">
-      <Link href="/" className="flex items-center gap-2" aria-label="UERT · Ir al inicio">
-        <span className="flex size-9 items-center justify-center rounded-md bg-primary text-primary-foreground">
-          <ShieldCheckIcon className="size-5" />
-        </span>
-        <span className="text-left leading-tight">
-          <span className="block text-sm font-semibold">UERT</span>
-          <span className="block text-xs text-muted-foreground">Gestión de denuncias</span>
-        </span>
+      <Link href="/" aria-label="UERT · Ir al inicio">
+        <Marca sobre="claro" />
       </Link>
       <div className="flex w-full flex-col items-center gap-3 rounded-xl border bg-background px-6 py-10 shadow-xs">
         <p className="font-mono text-5xl font-semibold tracking-tight text-primary">404</p>

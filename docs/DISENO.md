@@ -83,6 +83,21 @@ tests/                      vitest (dominio y flujos sobre PGlite en memoria)
 - Formularios: `react-hook-form` + `zodResolver` con los esquemas de `lib/esquemas.ts` cuando existen; componentes `Field*` de `components/ui/field.tsx`; fechas con `<Input type="date">` (permite escribir y elegir, RNF-08).
 - Llamar acciones desde el cliente con `useAccion()` (`components/comun/use-accion.ts`) y mostrar errores con `<ErrorAccion>`.
 
+### Identidad visual (Gobierno de Santiago del Estero)
+
+Tomada de [sde.gob.ar](https://sde.gob.ar/): barra y pie en azul institucional con el logo en blanco, fondo gris lavanda y tipografía Blinker.
+
+| Pieza | Dónde |
+| --- | --- |
+| Colores (`--sde-azul` #003399, `--sde-celeste` #00a0e5, `--sde-rojo` #c4343b, `--sde-fondo` #efeff5, `--sde-texto` #1d1d1b) y su mapeo a los tokens de shadcn (`--primary`, `--ring`, `--destructive`, `--muted`…) | `src/app/globals.css` |
+| Tipografía Blinker (sin peso 500: `font-medium` = 600 y `font-semibold` = 700) | `src/app/layout.tsx`, `globals.css` |
+| Logo de la Provincia, blanco (sobre azul) y azul (fondos claros y papel) | `src/assets/marca/*.svg` → `LogoSDE` |
+| Marca de la app (logo · UERT · Gestión de denuncias) y pie institucional | `src/components/app/marca.tsx` (`Marca`, `PieSDE`) |
+| Escudo en color como ícono de la pestaña | `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` |
+| Membrete de constancias, citaciones y rechazos | `Membrete` en `src/components/comun/documento.tsx` |
+
+Los colores de cada rol (`ROL_INFO`) y de los estados no cambian: sirven para distinguir áreas. Los SVG se importan desde `src/assets` (no desde `/public`) para que Next les agregue el `basePath` de la VPS.
+
 ### Piezas compartidas (`src/components/comun`)
 
 | Pieza | Uso |

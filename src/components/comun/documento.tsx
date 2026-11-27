@@ -4,7 +4,8 @@
  * misma barra de pantalla y la misma leyenda de demostración al pie.
  */
 import Link from "next/link";
-import { ArrowLeftIcon, ShieldCheckIcon } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
+import { LogoSDE } from "@/components/app/marca";
 import { BotonImprimir } from "@/components/comun/boton-imprimir";
 import { UERT } from "@/lib/dominio/constantes";
 import { cn } from "@/lib/utils";
@@ -64,16 +65,18 @@ export function BarraImpresion({
   );
 }
 
-/** Membrete de la UERT con el área que emite; a la derecha, el título y la referencia del documento. */
+/**
+ * Membrete de la UERT: logo de la Provincia y el área que emite; a la derecha,
+ * el título y la referencia del documento.
+ */
 export function Membrete({ area, children }: { area: string; children: React.ReactNode }) {
   return (
-    <header className="flex flex-wrap items-start justify-between gap-6 border-b-2 border-zinc-900 pb-4">
-      <div className="flex items-center gap-3">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-md border-2 border-zinc-900">
-          <ShieldCheckIcon className="size-6" aria-hidden />
-        </span>
+    <header className="flex flex-wrap items-start justify-between gap-6 border-b-2 border-sde-azul pb-4">
+      <div className="flex items-center gap-4">
+        <LogoSDE variante="azul" className="h-11" />
+        <span className="h-11 w-px shrink-0 bg-zinc-300" aria-hidden />
         <div className="leading-tight">
-          <p className="text-[11px] tracking-wide text-zinc-600 uppercase">Provincia de {UERT.provincia}</p>
+          <p className="text-[11px] tracking-wide text-zinc-600 uppercase">Gobierno de la Provincia</p>
           <p className="text-base font-semibold">{UERT.nombre}</p>
           <p className="text-xs text-zinc-600">
             {UERT.sigla} · {area}

@@ -4,12 +4,24 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Blinker (la tipografía de sde.gob.ar) no tiene peso 500: «medium» pasa a 600
+ * y «semibold» a 700 para mantener tres niveles (400 · 600 · 700).
+ */
+@theme {
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --color-sde-azul: var(--sde-azul);
+  --color-sde-celeste: var(--sde-celeste);
+  --color-sde-rojo: var(--sde-rojo);
+  --font-sans: var(--font-blinker);
   --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-geist-sans);
+  --font-heading: var(--font-blinker);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,39 +61,51 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  /* Azul institucional como color principal */
-  --primary: oklch(0.43 0.13 255);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.52 0 0);
-  --accent: oklch(0.96 0.01 255);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.9 0 0);
-  --ring: oklch(0.62 0.12 255);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /*
+   * Colores del Gobierno de la Provincia de Santiago del Estero (sde.gob.ar):
+   * azul institucional de la barra y el pie, celeste de los resaltados, rojo
+   * de los botones de acción, gris lavanda del fondo y casi negro del texto.
+   */
+  --sde-azul: #003399;
+  --sde-azul-oscuro: #1e3b86;
+  --sde-celeste: #00a0e5;
+  --sde-celeste-oscuro: #0070a0;
+  --sde-rojo: #c4343b;
+  --sde-fondo: #efeff5;
+  --sde-texto: #1d1d1b;
+
+  --background: #ffffff;
+  --foreground: var(--sde-texto);
+  --card: #ffffff;
+  --card-foreground: var(--sde-texto);
+  --popover: #ffffff;
+  --popover-foreground: var(--sde-texto);
+  --primary: var(--sde-azul);
+  --primary-foreground: #ffffff;
+  --secondary: var(--sde-fondo);
+  --secondary-foreground: var(--sde-texto);
+  --muted: var(--sde-fondo);
+  --muted-foreground: #5c5c66;
+  --accent: #e8edf7;
+  --accent-foreground: var(--sde-texto);
+  --destructive: var(--sde-rojo);
+  --border: #e0e0e8;
+  --input: #d4d4dc;
+  --ring: var(--sde-celeste);
+  --chart-1: var(--sde-azul);
+  --chart-2: var(--sde-celeste);
+  --chart-3: var(--sde-celeste-oscuro);
+  --chart-4: #75a8da;
+  --chart-5: var(--sde-azul-oscuro);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #ffffff;
+  --sidebar-foreground: var(--sde-texto);
+  --sidebar-primary: var(--sde-azul);
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: var(--sde-fondo);
+  --sidebar-accent-foreground: var(--sde-texto);
+  --sidebar-border: #e0e0e8;
+  --sidebar-ring: var(--sde-celeste);
 }
 
 .dark {
