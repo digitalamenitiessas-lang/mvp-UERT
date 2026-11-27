@@ -85,12 +85,12 @@ tests/                      vitest (dominio y flujos sobre PGlite en memoria)
 
 ### Identidad visual (Gobierno de Santiago del Estero)
 
-Tomada de [sde.gob.ar](https://sde.gob.ar/): barra y pie en azul institucional con el logo en blanco, fondo gris lavanda y tipografía Blinker.
+Tomada de [sde.gob.ar](https://sde.gob.ar/): barra y pie en azul institucional con el logo en blanco y fondo gris lavanda. La tipografía es Figtree: el sitio usa Blinker, pero en pantallas con tablas densas resultaba dura.
 
 | Pieza | Dónde |
 | --- | --- |
 | Colores (`--sde-azul` #003399, `--sde-celeste` #00a0e5, `--sde-rojo` #c4343b, `--sde-fondo` #efeff5, `--sde-texto` #1d1d1b) y su mapeo a los tokens de shadcn (`--primary`, `--ring`, `--destructive`, `--muted`…) | `src/app/globals.css` |
-| Tipografía Blinker (sin peso 500: `font-medium` = 600 y `font-semibold` = 700) | `src/app/layout.tsx`, `globals.css` |
+| Tipografía Figtree (variable, todos los pesos) | `src/app/layout.tsx`, `globals.css` |
 | Logo de la Provincia, blanco (sobre azul) y azul (fondos claros y papel) | `src/assets/marca/*.svg` → `LogoSDE` |
 | Marca de la app (logo · UERT · Gestión de denuncias) y pie institucional | `src/components/app/marca.tsx` (`Marca`, `PieSDE`) |
 | Escudo en color como ícono de la pestaña | `src/app/icon.svg`, `favicon.ico`, `apple-icon.png` |

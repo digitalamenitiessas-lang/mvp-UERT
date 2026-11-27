@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Blinker, Geist_Mono } from "next/font/google";
+import { Figtree, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
-// Blinker es la tipografía de sde.gob.ar. No es variable: se cargan los pesos
-// que usa la app (ver globals.css, «medium» = 600 y «semibold» = 700).
-const blinker = Blinker({ variable: "--font-blinker", subsets: ["latin"], weight: ["400", "600", "700"] });
+// Figtree: amable y muy legible en tablas densas (sde.gob.ar usa Blinker, que
+// en la app resultaba dura). Es variable: trae todos los pesos.
+const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // sde.gob.ar (--muted). La app no tiene tema oscuro, por eso los avisos
   // (sonner) van siempre en claro.
   return (
-    <html lang="es-AR" className={`${blinker.variable} ${geistMono.variable} h-full bg-background antialiased`}>
+    <html lang="es-AR" className={`${figtree.variable} ${geistMono.variable} h-full bg-background antialiased`}>
       <body className="min-h-full bg-muted text-foreground">
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster theme="light" richColors position="top-right" closeButton />
