@@ -605,7 +605,10 @@ export async function responderConsulta(
   if (consulta.audioSinTexto) return respuestaAudioSinTexto(ctx, consulta.audioSinTexto.segundos);
 
   const id = consulta.intencion ?? detectarIntencion(consulta.texto);
-  const pedido = consulta.intencion ? null : detectarBusqueda(consulta.texto);
+  let pedido = consulta.intencion ? null : detectarBusqueda(consulta.texto);
+  // «Mostrame cómo usar esta pantalla» no es una búsqueda: si se reconoce una pregunta,
+  // gana la pregunta. Un número, un CUIL o un DNI se buscan siempre.
+  if (pedido?.por === "texto" && id) pedido = null;
   const necesitaDatos = Boolean(pedido) || Boolean(id && INTENCIONES_DE_DATOS[id]);
 
   if (necesitaDatos && !usuario) {

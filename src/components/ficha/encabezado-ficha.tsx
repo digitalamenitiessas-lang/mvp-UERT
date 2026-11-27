@@ -47,6 +47,7 @@ export function EncabezadoFicha({ ficha, plazos }: { ficha: ExpedienteFicha; pla
 
   return (
     <EncabezadoPagina
+      recorrido="ficha-encabezado"
       volver={{ href: "/expedientes", texto: "Expedientes" }}
       titulo={
         <>

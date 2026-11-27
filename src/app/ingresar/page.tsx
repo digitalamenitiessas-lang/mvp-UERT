@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { FlaskConicalIcon } from "lucide-react";
 import { Marca, PieSDE } from "@/components/app/marca";
 import { Asistente } from "@/components/asistente/asistente";
+import { BotonRecorridoIngreso } from "@/components/recorrido/boton-ingreso";
 import { TarjetasRol } from "@/components/app/tarjetas-rol";
 import { getDb } from "@/lib/db";
 import { listarUsuarios } from "@/lib/datos/usuarios";
@@ -16,6 +17,7 @@ export const dynamic = "force-dynamic";
 /** Elegir con qué rol entrar. No hay contraseñas: es una demo con datos ficticios. */
 export default async function Ingresar() {
   const usuarios = await listarUsuarios(await getDb());
+  const mesa = usuarios.find((u) => u.rol === "mesa_entrada");
   return (
     <div className="flex min-h-screen flex-col">
       <header className="bg-primary text-primary-foreground">
@@ -37,6 +39,14 @@ export default async function Ingresar() {
             <FlaskConicalIcon className="size-4" />
             Demostración: los datos son ficticios y las comunicaciones con la SRT, simuladas.
           </p>
+          {mesa ? (
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <BotonRecorridoIngreso usuarioMesa={mesa.id} />
+              <span className="text-sm text-muted-foreground">
+                Te lleva por todo el circuito, cambiando de rol solo. O elegí un rol y recorré por tu cuenta.
+              </span>
+            </div>
+          ) : null}
         </div>
         <TarjetasRol usuarios={usuarios.map((u) => ({ id: u.id, nombre: u.nombre, rol: u.rol }))} />
         <p className="text-xs text-muted-foreground">

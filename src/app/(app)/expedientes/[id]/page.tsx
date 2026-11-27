@@ -106,7 +106,9 @@ export default async function PaginaExpediente({ params, searchParams }: Props) 
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
         <aside className="flex min-w-0 flex-col gap-4 lg:col-start-2 lg:row-start-1" aria-label="Acciones del expediente">
-          <QuienActua {...p} />
+          <div data-recorrido="quien-actua">
+            <QuienActua {...p} />
+          </div>
           <PanelMesa {...p} />
           <PanelMedico {...p} />
           <PanelLegal {...p} />
@@ -115,7 +117,7 @@ export default async function PaginaExpediente({ params, searchParams }: Props) 
 
         <div className="min-w-0 lg:col-start-1 lg:row-start-1">
           <PestanasFicha key={ficha.expediente.id} inicial={tab}>
-            <div className="overflow-x-auto pb-1 [scrollbar-width:thin]">
+            <div className="overflow-x-auto pb-1 [scrollbar-width:thin]" data-recorrido="pestanas-ficha">
               <TabsList aria-label="Secciones del expediente">
                 {pestanas.map((t) => (
                   <TabsTrigger key={t.valor} value={t.valor} className="px-2">

@@ -10,6 +10,7 @@ import { redirect, RedirectType, unstable_rethrow } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { ROL_INFO } from "@/lib/dominio/constantes";
+import { listarExpedientes } from "@/lib/datos/expedientes";
 import { obtenerUsuario } from "@/lib/datos/usuarios";
 import type { NuevaDenunciaEntrada } from "@/lib/esquemas";
 import {
@@ -339,4 +340,29 @@ export async function accionAsistente(consulta: ConsultaAsistente): Promise<Resu
     console.error(e);
     return { ok: false, error: "No pude responder ahora. Probá de nuevo en un momento." };
   }
+}
+
+// ---------------------------------------------------------------------------
+// Recorrido guiado: solo lee
+// ---------------------------------------------------------------------------
+/**
+ * Un expediente de ejemplo en ese estado, para mostrar su ficha en el
+ * recorrido del circuito. Prefiere los que muestran mejor la etapa: en
+ * recepción, uno con la relación laboral verificada; en evaluación, uno con
+ * diagnósticos por evaluar; en dictamen, uno con diagnósticos sin decidir.
+ */
+export async function accionExpedienteDeEjemplo(estado: string): Promise<number | null> {
+  const permitidos = ["recepcion", "evaluacion_medica", "dictamen_legal", "licencia_activa", "sin_baja"] as const;
+  const e = permitidos.find((p) => p === estado);
+  if (!e || !(await usuarioActual())) return null;
+  const filas = await listarExpedientes(await getDb(), { estados: [e], limite: 30 });
+  const mejor =
+    e === "recepcion"
+      ? filas.find((f) => f.relacion_laboral_verificada === true)
+      : e === "evaluacion_medica"
+        ? filas.find((f) => f.diagnosticos_pendientes > 0)
+        : e === "dictamen_legal"
+          ? filas.find((f) => f.diagnosticos_decididos < f.diagnosticos_total)
+          : undefined;
+  return (mejor ?? filas[0])?.id ?? null;
 }

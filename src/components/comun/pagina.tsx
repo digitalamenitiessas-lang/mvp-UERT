@@ -9,15 +9,18 @@ export function EncabezadoPagina({
   acciones,
   volver,
   children,
+  recorrido = "encabezado",
 }: {
   titulo: React.ReactNode;
   descripcion?: React.ReactNode;
   acciones?: React.ReactNode;
   volver?: { href: string; texto: string };
   children?: React.ReactNode;
+  /** Marca para el recorrido guiado (data-recorrido). */
+  recorrido?: string;
 }) {
   return (
-    <div className="mb-6 flex flex-col gap-3">
+    <div className="mb-6 flex flex-col gap-3" data-recorrido={recorrido}>
       {volver ? (
         <Link
           href={volver.href}
@@ -32,7 +35,11 @@ export function EncabezadoPagina({
           <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{titulo}</h1>
           {descripcion ? <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{descripcion}</p> : null}
         </div>
-        {acciones ? <div className="flex flex-wrap items-center gap-2">{acciones}</div> : null}
+        {acciones ? (
+          <div className="flex flex-wrap items-center gap-2" data-recorrido="acciones-pagina">
+            {acciones}
+          </div>
+        ) : null}
       </div>
       {children}
     </div>
@@ -46,15 +53,18 @@ export function Seccion({
   acciones,
   children,
   className,
+  recorrido,
 }: {
   titulo: React.ReactNode;
   descripcion?: React.ReactNode;
   acciones?: React.ReactNode;
   children: React.ReactNode;
   className?: string;
+  /** Marca para el recorrido guiado (data-recorrido). */
+  recorrido?: string;
 }) {
   return (
-    <section className={cn("flex flex-col gap-3", className)}>
+    <section className={cn("flex flex-col gap-3", className)} data-recorrido={recorrido}>
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
           <h2 className="text-base font-semibold">{titulo}</h2>

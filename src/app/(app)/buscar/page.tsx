@@ -103,7 +103,9 @@ export default async function PaginaBuscar({
         titulo="Búsqueda unificada"
         descripcion="Todos los siniestros de una persona, del sistema nuevo y del que la UERT usa hoy, agrupados por año. Buscá por apellido y nombre, DNI, CUIL o número de siniestro del sistema actual (por ejemplo, AT-2021-0233); con un número de este sistema (AAAA-NNNNNN-SS) se abre directamente el expediente."
       >
-        <FormularioBusqueda q={q} />
+        <div data-recorrido="formulario-busqueda">
+          <FormularioBusqueda q={q} />
+        </div>
         <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <span aria-hidden className="size-2 rounded-full bg-primary" />

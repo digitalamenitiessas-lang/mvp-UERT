@@ -83,7 +83,7 @@ export function GrillaIndicadores({
   children: React.ReactNode;
 }) {
   return (
-    <section aria-label={etiqueta} className={cn("grid grid-cols-1 gap-3", COLUMNAS[columnas])}>
+    <section aria-label={etiqueta} className={cn("grid grid-cols-1 gap-3", COLUMNAS[columnas])} data-recorrido="indicadores">
       {children}
     </section>
   );

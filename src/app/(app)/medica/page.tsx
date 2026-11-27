@@ -122,6 +122,7 @@ export default async function BandejaMedica() {
 
         <div id="para-evaluar" className="scroll-mt-32">
           <Seccion
+            recorrido="para-evaluar"
             titulo="Para evaluar"
             descripcion="Expedientes en evaluación médica. Cuando todos los diagnósticos estén evaluados, la baja definida y no queden citaciones pendientes, pasalos al Área legal."
           >
@@ -136,6 +137,7 @@ export default async function BandejaMedica() {
 
         <div id="citaciones" className="scroll-mt-32">
           <Seccion
+            recorrido="citaciones"
             titulo="Citaciones programadas"
             descripcion={
               <span className="inline-flex flex-wrap items-center gap-1.5">
@@ -150,6 +152,7 @@ export default async function BandejaMedica() {
 
         <div id="reiterar" className="scroll-mt-32">
           <Seccion
+            recorrido="reiterar"
             titulo="No asistieron: reiterar la citación"
             descripcion="Se reitera por única vez, bajo apercibimiento de caducidad (Anexo II pto. 3.3). Si tampoco asiste, el expediente queda Desistido."
           >

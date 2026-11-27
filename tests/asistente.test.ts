@@ -52,6 +52,9 @@ describe("Reconoce lo que se escribe", () => {
     ["¿qué es FODEP?", "fodep"],
     ["¿qué pasa si ya tiene un siniestro abierto?", "siniestro_abierto"],
     ["¿quién tiene que actuar en este expediente?", "expediente_actual"],
+    ["mostrame cómo usar esta pantalla", "recorrido"],
+    ["quiero hacer el recorrido guiado", "recorrido"],
+    ["¿Cómo es el recorrido de una denuncia?", "circuito"],
     ["¿Qué es un accidente de trabajo?", null],
     ["asdfgh", null],
   ])("«%s» → %s", (texto, esperado) => {
@@ -207,6 +210,14 @@ describe("Respuestas con datos de la demo", () => {
     const porApellido = await preguntar("mesa_entrada", { texto: exp.apellido });
     expect(porApellido.intencion).toBe("buscar");
     expect(bloques(porApellido, "expedientes")[0].items.map((e) => e.id)).toContain(exp.id);
+  });
+
+  it("una pregunta reconocida le gana a «mostrame …» como búsqueda", async () => {
+    const r = await preguntar("direccion", { texto: "mostrame cómo usar esta pantalla", ruta: "/direccion" });
+    expect(r.intencion).toBe("recorrido");
+    expect(bloques(r, "recorrido")).toHaveLength(1);
+    const pendientes = await preguntar("legal", { texto: "mostrame mis pendientes" });
+    expect(pendientes.intencion).toBe("pendientes");
   });
 
   it("si no encuentra, ofrece la búsqueda unificada", async () => {

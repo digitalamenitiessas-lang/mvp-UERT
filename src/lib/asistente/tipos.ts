@@ -41,7 +41,9 @@ export type Bloque =
   | { tipo: "indicadores"; items: Array<{ etiqueta: string; valor: number; tono?: "normal" | "alerta" | "peligro" }> }
   | { tipo: "expedientes"; items: ExpedienteResumen[]; vacio?: string }
   | { tipo: "nota"; texto: string }
-  | { tipo: "enlaces"; enlaces: Enlace[] };
+  | { tipo: "enlaces"; enlaces: Enlace[] }
+  /** Botones para arrancar el recorrido guiado (de esta pantalla o del circuito). */
+  | { tipo: "recorrido" };
 
 export interface Respuesta {
   /** Intención que la generó (para tests y para no repetir sugerencias). */

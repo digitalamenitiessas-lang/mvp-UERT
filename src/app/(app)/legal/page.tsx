@@ -165,6 +165,7 @@ export default async function BandejaLegal() {
       </div>
 
       <Seccion
+        recorrido="en-dictamen"
         titulo="En dictamen"
         descripcion="Ordenados por vencimiento. Entrá al expediente para decidir cada diagnóstico y cerrar el dictamen."
       >
@@ -177,6 +178,7 @@ export default async function BandejaLegal() {
       </Seccion>
 
       <Seccion
+        recorrido="comision-medica"
         titulo="Aceptados sin baja: presentar ante la Comisión Médica"
         descripcion={`Hay ${PLAZOS.sinBajaDiasHabiles} días hábiles desde el dictamen para presentar el trámite ante la ${UERT.comisionMedica.nombre}. Lo registra el Área legal o Seguimiento de licencias.`}
       >
@@ -201,6 +203,7 @@ export default async function BandejaLegal() {
       </Seccion>
 
       <Seccion
+        recorrido="motivos"
         titulo="Motivos de rechazo"
         descripcion="Cada diagnóstico se decide por separado. El motivo depende del tipo de denuncia."
       >

@@ -194,6 +194,7 @@ export default async function BandejaMesa() {
         </GrillaIndicadores>
 
         <Seccion
+          recorrido="para-pasar"
           titulo="Para controlar y pasar al Área médica"
           descripcion="Verificá la relación laboral y la documentación de cada denuncia y pasala al Área médica. Primero las más antiguas."
         >
@@ -206,6 +207,7 @@ export default async function BandejaMesa() {
         </Seccion>
 
         <Seccion
+          recorrido="recientes"
           titulo="Recibidas en los últimos 7 días"
           descripcion={`Todas las denuncias que ingresaron desde el ${formatoFecha(desde)}, en cualquier estado.`}
         >

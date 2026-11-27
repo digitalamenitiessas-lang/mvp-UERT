@@ -5,11 +5,13 @@
  * bloques: pasos, listas, indicadores, expedientes…) y del usuario (texto,
  * audio con su onda y archivo adjunto).
  */
-import { Fragment, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRightIcon,
   CircleAlertIcon,
+  MonitorIcon,
+  RouteIcon,
   FileTextIcon,
   InfoIcon,
   MicIcon,
@@ -18,6 +20,8 @@ import {
   TriangleAlertIcon,
 } from "lucide-react";
 import { EstadoBadge, PlazoBadge, TipoBadge } from "@/components/comun/badges";
+import { TextoConNegrita } from "@/components/comun/texto-con-negrita";
+import { useRecorrido } from "@/components/recorrido/recorrido";
 import type { Bloque, ExpedienteResumen, Respuesta, Sugerencia } from "@/lib/asistente/tipos";
 import type { Rol } from "@/lib/dominio/constantes";
 import { cn } from "@/lib/utils";
@@ -76,30 +80,6 @@ export function tamanoLegible(bytes: number): string {
 }
 
 // ---------------------------------------------------------------------------
-// Texto con **negrita**
-// ---------------------------------------------------------------------------
-function ConNegrita({ texto }: { texto: string }) {
-  return (
-    <>
-      {texto.split("\n").map((linea, i) => (
-        <Fragment key={i}>
-          {i > 0 ? <br /> : null}
-          {linea.split(/(\*\*[^*]+\*\*)/g).map((parte, j) =>
-            parte.startsWith("**") && parte.endsWith("**") ? (
-              <strong key={j} className="font-semibold text-foreground">
-                {parte.slice(2, -2)}
-              </strong>
-            ) : (
-              <Fragment key={j}>{parte}</Fragment>
-            ),
-          )}
-        </Fragment>
-      ))}
-    </>
-  );
-}
-
-// ---------------------------------------------------------------------------
 // Bloques de una respuesta
 // ---------------------------------------------------------------------------
 function TarjetaExpediente({ e, onNavegar }: { e: ExpedienteResumen; onNavegar: () => void }) {
@@ -134,7 +114,7 @@ function VistaBloque({ b, onNavegar }: { b: Bloque; onNavegar: () => void }) {
     case "texto":
       return (
         <p className="leading-relaxed">
-          <ConNegrita texto={b.texto} />
+          <TextoConNegrita texto={b.texto} />
         </p>
       );
     case "nota":
@@ -142,7 +122,7 @@ function VistaBloque({ b, onNavegar }: { b: Bloque; onNavegar: () => void }) {
         <p className="flex gap-2 rounded-lg bg-muted px-2.5 py-2 text-xs leading-snug text-muted-foreground">
           <InfoIcon className="mt-px size-3.5 shrink-0 text-sde-celeste" />
           <span>
-            <ConNegrita texto={b.texto} />
+            <TextoConNegrita texto={b.texto} />
           </span>
         </p>
       );
@@ -157,7 +137,7 @@ function VistaBloque({ b, onNavegar }: { b: Bloque; onNavegar: () => void }) {
                   {i + 1}
                 </span>
                 <span className="leading-snug">
-                  <ConNegrita texto={p} />
+                  <TextoConNegrita texto={p} />
                 </span>
               </li>
             ))}
@@ -205,6 +185,8 @@ function VistaBloque({ b, onNavegar }: { b: Bloque; onNavegar: () => void }) {
       ) : (
         <p className="text-muted-foreground">{b.vacio ?? "No hay expedientes para mostrar."}</p>
       );
+    case "recorrido":
+      return <BotonesRecorrido />;
     case "enlaces":
       return (
         <div className="flex flex-wrap gap-1.5">
@@ -222,6 +204,34 @@ function VistaBloque({ b, onNavegar }: { b: Bloque; onNavegar: () => void }) {
         </div>
       );
   }
+}
+
+/** Arrancar el recorrido guiado desde la conversación. */
+function BotonesRecorrido() {
+  const recorrido = useRecorrido();
+  if (!recorrido) return null;
+  const clase =
+    "flex w-full items-center gap-2.5 rounded-xl border bg-background px-3 py-2.5 text-left transition hover:border-primary/40 hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50";
+  return (
+    <div className="space-y-1.5">
+      <button type="button" className={clase} disabled={!recorrido.pantalla} onClick={recorrido.iniciarPantalla}>
+        <MonitorIcon className="size-4 shrink-0 text-primary" />
+        <span className="min-w-0">
+          <span className="block text-[13px] font-medium">Recorrer esta pantalla</span>
+          <span className="block truncate text-xs text-muted-foreground">
+            {recorrido.pantalla?.nombre ?? "Esta pantalla no tiene recorrido"}
+          </span>
+        </span>
+      </button>
+      <button type="button" className={clase} onClick={recorrido.iniciarCircuito}>
+        <RouteIcon className="size-4 shrink-0 text-primary" />
+        <span className="min-w-0">
+          <span className="block text-[13px] font-medium">El circuito completo</span>
+          <span className="block truncate text-xs text-muted-foreground">De Mesa de entrada a Dirección</span>
+        </span>
+      </button>
+    </div>
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -36,7 +36,7 @@ function pasos(estado: EstadoExpediente, llegoAMedica: boolean): Paso[] {
 export function Circuito({ estado, llegoAMedica = false }: { estado: EstadoExpediente; llegoAMedica?: boolean }) {
   const estados = pasos(estado, llegoAMedica);
   return (
-    <ol className="flex w-full items-center gap-1 overflow-x-auto text-xs" aria-label="Etapa del circuito">
+    <ol className="flex w-full items-center gap-1 overflow-x-auto text-xs" aria-label="Etapa del circuito" data-recorrido="circuito">
       {ETAPAS_CIRCUITO.map((etapa, i) => {
         const paso = estados[i];
         const nombre = i === 4 && !ESTADO_INFO[estado].abierto ? ESTADO_INFO[estado].nombre : etapa.nombre;

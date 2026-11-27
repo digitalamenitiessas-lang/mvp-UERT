@@ -265,6 +265,7 @@ export default async function BandejaSeguimiento() {
 
         <div id="presentaciones" className="scroll-mt-32">
           <Seccion
+            recorrido="presentaciones"
             titulo={<Titulo texto="Presentaciones vencidas o por vencer" cantidad={aControlar.length} />}
             descripcion={`Licencias con la próxima presentación vencida o dentro de los próximos ${PLAZOS.avisoPresentacionDias} días (la anticipación del aviso está a definir con la UERT).${puedeRegistrar && aControlar.length ? " Podés registrar la presentación desde acá." : ""}`}
           >
@@ -279,6 +280,7 @@ export default async function BandejaSeguimiento() {
 
         <div id="tope" className="scroll-mt-32">
           <Seccion
+            recorrido="tope-ilt"
             titulo={<Titulo texto="Tope de la ILT cercano" cantidad={topeCercano.length} />}
             descripcion={`La ILT no puede superar los ${PLAZOS.topeIltDias} días desde el siniestro (Ley 24.557, art. 7). Se avisa con ${PLAZOS.avisoTopeIltDias} días de anticipación; al cumplirse, el alta se registra con el motivo «Transcurso de un año».`}
           >
@@ -293,6 +295,7 @@ export default async function BandejaSeguimiento() {
 
         <div id="licencias" className="scroll-mt-32">
           <Seccion
+            recorrido="licencias"
             titulo={<Titulo texto="Licencias activas" cantidad={licencias.length} />}
             descripcion={`Todas, por fecha de la próxima presentación. En «Días de ILT», la cifra son los días de licencia y la barra, cuánto pasó del año de tope contado desde el siniestro (N/${PLAZOS.topeIltDias}).`}
           >

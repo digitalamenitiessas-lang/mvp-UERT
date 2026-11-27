@@ -205,6 +205,7 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
           action={conBase("/expedientes")}
           role="search"
           aria-label="Filtrar expedientes"
+          data-recorrido="filtros-expedientes"
           className="grid gap-3 rounded-xl border bg-background p-4 sm:grid-cols-[minmax(0,1fr)_14rem] lg:grid-cols-[minmax(0,1fr)_14rem_auto] lg:items-end"
         >
           {filtroEstado ? <input type="hidden" name="estado" value={filtroEstado} /> : null}
@@ -293,6 +294,7 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
           ) : null}
         </div>
 
+        <div data-recorrido="lista-expedientes">
         <TablaExpedientes
           filas={filas}
           vacio={
@@ -313,6 +315,7 @@ export default async function PaginaExpedientes({ searchParams }: Props) {
             },
           ]}
         />
+        </div>
 
         <p className="text-xs text-muted-foreground">
           ¿Buscás un siniestro del sistema anterior? Usá la{" "}

@@ -74,7 +74,7 @@ export default async function PaginaAdmin() {
 
       <div className="flex flex-col gap-8">
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="bg-background md:col-span-2">
+          <Card className="bg-background md:col-span-2" data-recorrido="reiniciar-demo">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <RotateCcwIcon className="size-4 text-muted-foreground" aria-hidden />
@@ -138,6 +138,7 @@ export default async function PaginaAdmin() {
         </div>
 
         <Seccion
+          recorrido="usuarios"
           titulo="Usuarios de la demo"
           descripcion="Un usuario por rol. No hay contraseñas: se elige con quién entrar y se cambia desde el selector «Viendo como»."
         >

@@ -44,7 +44,7 @@ export function PanelArea({
 }) {
   const Icono = ICONO[rol];
   return (
-    <Card size="sm" className={className}>
+    <Card size="sm" className={className} data-recorrido="panel-area">
       <CardHeader className="border-b">
         <CardTitle className="flex items-center gap-2">
           <span

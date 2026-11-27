@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { accionAsistente } from "@/app/acciones";
 import { LogoSDE } from "@/components/app/marca";
+import { useRecorrido } from "@/components/recorrido/recorrido";
 import {
   bienvenida,
   NOMBRE_ASISTENTE,
@@ -109,6 +110,9 @@ const respuestaLocal = (intencion: string, textos: string[], ctx: ContextoAsiste
 export function Asistente({ usuario }: { usuario: { nombre: string; rol: Rol } | null }) {
   const ruta = usePathname();
   const rol = usuario?.rol ?? null;
+  // Durante el recorrido guiado el panel se corre (queda el botón, que el recorrido muestra).
+  const recorrido = useRecorrido();
+  const enRecorrido = recorrido?.activo ?? false;
   const ctx: ContextoAsistente = { rol, nombre: nombreDePila(usuario?.nombre), ruta };
 
   const [abierto, setAbierto] = useState(false);
@@ -285,11 +289,13 @@ export function Asistente({ usuario }: { usuario: { nombre: string; rol: Rol } |
   /** Si cambió de pantalla, las sugerencias pasan a ser las de la pantalla nueva. */
   const cambioDePantalla = Boolean(ultimoBot && ultimoBot.de === "bot" && ultimoBot.ruta && ultimoBot.ruta !== ruta);
   const primeraVez = !mensajes.some((m) => m.de === "usuario");
+  /** Durante el recorrido el panel queda abierto pero oculto: el botón muestra el sol. */
+  const panelVisible = abierto && !enRecorrido;
 
   return (
     <div className="no-imprimir">
       {/* Panel */}
-      {abierto ? (
+      {abierto && !enRecorrido ? (
         <div
           ref={panel}
           role="dialog"
@@ -381,7 +387,7 @@ export function Asistente({ usuario }: { usuario: { nombre: string; rol: Rol } |
       ) : null}
 
       {/* Aviso «¿Te ayudo?» */}
-      {aviso && !abierto ? (
+      {aviso && !abierto && !enRecorrido && !recorrido?.ofreciendo ? (
         <div className="fixed right-5 bottom-[5.75rem] z-40 w-64 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2">
           <div className="relative rounded-2xl rounded-br-md border bg-background p-3.5 pr-8 shadow-lg">
             <button
@@ -406,25 +412,26 @@ export function Asistente({ usuario }: { usuario: { nombre: string; rol: Rol } |
       <button
         ref={boton}
         type="button"
-        onClick={abierto ? cerrar : () => abrir()}
-        aria-expanded={abierto}
-        aria-label={abierto ? "Cerrar el asistente virtual" : `Abrir el asistente virtual ${NOMBRE_ASISTENTE}`}
-        title={abierto ? undefined : `${NOMBRE_ASISTENTE} · Asistente virtual`}
+        data-recorrido="asistente"
+        onClick={panelVisible ? cerrar : () => abrir()}
+        aria-expanded={panelVisible}
+        aria-label={panelVisible ? "Cerrar el asistente virtual" : `Abrir el asistente virtual ${NOMBRE_ASISTENTE}`}
+        title={panelVisible ? undefined : `${NOMBRE_ASISTENTE} · Asistente virtual`}
         className={cn(
           "group fixed right-5 bottom-5 z-40 size-14 items-center justify-center rounded-full bg-primary text-white shadow-lg ring-4 ring-white/70 transition hover:scale-105 hover:shadow-xl focus-visible:ring-sde-celeste focus-visible:outline-none active:scale-95",
-          abierto ? "hidden sm:flex" : "flex",
+          panelVisible ? "hidden sm:flex" : "flex",
         )}
       >
-        <span className={cn("transition duration-200", abierto ? "scale-0 rotate-90 opacity-0" : "scale-100 opacity-100")}>
+        <span className={cn("transition duration-200", panelVisible ? "scale-0 rotate-90 opacity-0" : "scale-100 opacity-100")}>
           <SolSDE className="size-8 transition-transform duration-500 group-hover:rotate-45" />
         </span>
         <XIcon
           className={cn(
             "absolute size-6 transition duration-200",
-            abierto ? "scale-100 rotate-0 opacity-100" : "scale-0 -rotate-90 opacity-0",
+            panelVisible ? "scale-100 rotate-0 opacity-100" : "scale-0 -rotate-90 opacity-0",
           )}
         />
-        {!abierto ? (
+        {!panelVisible ? (
           <span className="absolute top-0.5 right-0.5 size-3 rounded-full bg-emerald-400 ring-2 ring-primary" aria-hidden />
         ) : null}
       </button>

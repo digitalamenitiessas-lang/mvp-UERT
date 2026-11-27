@@ -77,7 +77,7 @@ export function Navegacion({ rol }: { rol: Rol }) {
   const activo = (href: string) =>
     ruta === href || (ruta.startsWith(href + "/") && !enlaces.some((e) => e.href !== href && e.href.startsWith(href) && ruta.startsWith(e.href)));
   return (
-    <nav className="flex gap-1 overflow-x-auto" aria-label="Secciones">
+    <nav className="flex gap-1 overflow-x-auto" aria-label="Secciones" data-recorrido="navegacion">
       {enlaces.map((e) => {
         const Icono = ICONOS[e.icono];
         return (

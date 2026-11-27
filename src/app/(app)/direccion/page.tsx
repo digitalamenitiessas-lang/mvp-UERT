@@ -116,7 +116,7 @@ export default async function PaginaDireccion() {
       </GrillaIndicadores>
 
       <div className="mt-6 grid gap-4 lg:grid-cols-5">
-        <Card className="bg-background lg:col-span-3">
+        <Card className="bg-background lg:col-span-3" data-recorrido="por-etapa">
           <CardHeader>
             <CardTitle>Expedientes por etapa</CardTitle>
             <CardDescription>
@@ -141,6 +141,7 @@ export default async function PaginaDireccion() {
 
       <div id="vencimientos" className="mt-8 scroll-mt-32">
         <Seccion
+          recorrido="vencimientos"
           titulo="Vencimientos"
           descripcion={`${plural(vencidos, "vencido")} · ${plural(vencenHoy, "vence", "vencen")} hoy · ${plural(proximos, "próximo")}. Los plazos en término no se muestran.`}
         >
@@ -149,6 +150,7 @@ export default async function PaginaDireccion() {
       </div>
 
       <Seccion
+        recorrido="srt-tablero"
         className="mt-8"
         titulo={
           <span className="inline-flex flex-wrap items-center gap-2">

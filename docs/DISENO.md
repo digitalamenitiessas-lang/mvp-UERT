@@ -114,6 +114,23 @@ Botón flotante abajo a la derecha, en todas las pantallas de la app y en `/ingr
 - Para sumar una pregunta: una entrada en `INTENCIONES` (pregunta, tema, claves y `responder` o `datos: true`) y un caso en el test de reconocimiento.
 - La transcripción de Chrome usa el servicio de voz de Google. En el sistema real conviene definir dónde se procesan los audios (datos de salud).
 
+### Recorrido guiado (system tour)
+
+Oscurece la pantalla, marca un elemento y explica qué es y qué se puede hacer, paso a paso (← → para avanzar, Esc para salir). Dos recorridos:
+
+- **De la pantalla**: el de la ruta y el rol actuales (bandejas, nueva denuncia, ficha, listado, búsqueda, SRT, tablero, administración). Si la bandeja es de otra área, explica cómo cambiar de rol. Se ofrece la primera vez que se entra a cada pantalla (abajo a la izquierda, con «No volver a ofrecer»).
+- **Del circuito**: 29 pasos por Mesa de entrada → Área médica → Área legal → Seguimiento → Dirección. Cambia de rol solo (`cambiarUsuario`) y abre fichas de ejemplo en el estado de cada etapa (`accionExpedienteDeEjemplo`). Se arranca desde «Ver el recorrido guiado» en `/ingresar` (ideal para presentar), desde el botón **Recorrido** de la barra o pidiéndoselo a Yanapa.
+
+| Pieza | Dónde |
+| --- | --- |
+| Guion: pasos de cada pantalla y etapas del circuito | `src/lib/recorrido/guion.ts` (puro) |
+| Motor: foco, tarjeta, navegación y cambio de rol, oferta | `src/components/recorrido/recorrido.tsx` (`ProveedorRecorrido`, `useRecorrido`) |
+| Botón de la barra y botón de `/ingresar` | `boton-recorrido.tsx`, `boton-ingreso.tsx` |
+| Elementos marcados | atributo `data-recorrido` (lista en `OBJETIVOS`); `EncabezadoPagina` y `Seccion` aceptan `recorrido="…"` |
+| Tests | `tests/recorrido.test.ts` (también controla que cada objetivo esté marcado en el código) |
+
+El paso en curso vive en `sessionStorage`, así sobrevive al cambio de rol (Next rearma la página). Para sumar un paso: agregar el objetivo a `OBJETIVOS`, marcar el elemento con `data-recorrido` y escribir el paso en el guion; si el elemento puede no estar (depende del rol o del estado), marcar el paso como `opcional`.
+
 ### Piezas compartidas (`src/components/comun`)
 
 | Pieza | Uso |

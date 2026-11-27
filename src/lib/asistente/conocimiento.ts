@@ -179,6 +179,45 @@ export const INTENCIONES: Intencion[] = [
     siguientes: ["pendientes", "circuito", "audios"],
   },
   {
+    id: "recorrido",
+    pregunta: "Mostrame cómo usar esta pantalla",
+    tema: "Sobre la demo",
+    claves: [
+      {
+        t: [
+          "recorrido guiado",
+          "recorrido",
+          "tour",
+          "guiame",
+          "visita guiada",
+          "mostrame la pantalla",
+          "mostrame esta pantalla",
+          "mostrame como usar",
+          "como uso esta pantalla",
+          "explicame esta pantalla",
+          "explicame la pantalla",
+          "que hay en esta pantalla",
+          "que puedo hacer aca",
+          "que hay aca",
+        ],
+        p: 2,
+      },
+    ],
+    responder: (ctx) =>
+      ctx.rol
+        ? [
+            texto("Te muestro la pantalla paso a paso, marcando cada parte y qué se puede hacer ahí."),
+            texto("También te llevo por **todo el circuito**: voy cambiando de rol y de pantalla solo."),
+            { tipo: "recorrido" },
+          ]
+        : [
+            texto(
+              "Tocá **«Ver el recorrido guiado»** en esta pantalla: entra como Mesa de entrada y te lleva por todo el circuito, cambiando de rol solo.",
+            ),
+          ],
+    siguientes: ["circuito", "que_podes"],
+  },
+  {
     id: "humano",
     pregunta: "Quiero hablar con una persona",
     tema: "Sobre la demo",
@@ -1077,7 +1116,7 @@ export function bienvenida(ctx: ContextoAsistente): Respuesta {
       ),
       texto("Elegí una pregunta o escribime. También podés mandarme un **audio** o **adjuntar** un archivo."),
     ],
-    sugerencias: sugerenciasPara(ctx),
+    sugerencias: [...sugerenciasPara(ctx), ...(ctx.rol ? sugerencias(["recorrido"]) : [])],
   };
 }
 

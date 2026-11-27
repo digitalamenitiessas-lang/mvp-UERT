@@ -133,7 +133,7 @@ export default async function PaginaSrt({
 
       {/* Cada solapa es un link a ?tab=: se arma solo la que se está viendo */}
       <Tabs value={pestana} className="gap-4">
-        <TabsList className="w-full justify-start overflow-x-auto sm:w-fit">
+        <TabsList className="w-full justify-start overflow-x-auto sm:w-fit" data-recorrido="pestanas-srt">
           <TabsTrigger value="ws" className="px-2.5" asChild>
             <Link href="/srt?tab=ws" scroll={false}>
               <ServerIcon className="hidden size-4 sm:block" aria-hidden />
@@ -221,6 +221,7 @@ async function PestanaWebService({ soloErrores, conteo: wsConteo }: { soloErrore
       </div>
 
       <Seccion
+        recorrido="llamadas-ws"
         titulo="Llamadas al Web Service"
         descripcion={`${CANAL_SRT.ws_fodep.descripcion} Las denuncias rechazadas quedan registradas con el código de error FO de la SRT.`}
         acciones={

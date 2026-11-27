@@ -294,7 +294,9 @@ export function FormularioDenuncia(props: PropsFormularioDenuncia) {
       <EtiquetasContext.Provider value={contextoEtiquetas}>
         <form onSubmit={(e) => e.preventDefault()} noValidate className="flex flex-col gap-5">
           {props.modo === "nueva" ? (
-            <IndicadorPasos paso={paso} onIr={(n) => (n === 1 ? irA("persona") : irA(solapa))} />
+            <div data-recorrido="pasos-denuncia">
+              <IndicadorPasos paso={paso} onIr={(n) => (n === 1 ? irA("persona") : irA(solapa))} />
+            </div>
           ) : (
             <Card size="sm">
               <CardContent className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
@@ -317,7 +319,7 @@ export function FormularioDenuncia(props: PropsFormularioDenuncia) {
 
           {/* Paso 1 */}
           {props.modo === "nueva" ? (
-            <div hidden={paso !== 1}>
+            <div hidden={paso !== 1} data-recorrido="paso-persona">
               <Card>
                 <CardHeader>
                   <CardTitle>Tipo de denuncia y persona</CardTitle>
