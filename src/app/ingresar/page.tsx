@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FlaskConicalIcon } from "lucide-react";
 import { Marca, PieSDE } from "@/components/app/marca";
+import { Asistente } from "@/components/asistente/asistente";
 import { TarjetasRol } from "@/components/app/tarjetas-rol";
 import { getDb } from "@/lib/db";
 import { listarUsuarios } from "@/lib/datos/usuarios";
@@ -44,6 +45,7 @@ export default async function Ingresar() {
         </p>
       </main>
       <PieSDE ancho="max-w-5xl" />
+      <Asistente usuario={null} />
     </div>
   );
 }

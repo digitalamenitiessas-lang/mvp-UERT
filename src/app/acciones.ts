@@ -42,7 +42,9 @@ import {
   type SiniestroAbierto,
 } from "@/lib/operaciones";
 import { exigirPermiso } from "@/lib/operaciones/contexto";
-import { COOKIE_USUARIO, contextoActual } from "@/lib/sesion";
+import { COOKIE_USUARIO, contextoActual, usuarioActual } from "@/lib/sesion";
+import { limpiarConsulta, responderConsulta } from "@/lib/asistente/responder";
+import type { ConsultaAsistente, Respuesta } from "@/lib/asistente/tipos";
 import type { Persona } from "@/lib/tipos";
 
 export type ResultadoAccion<T = undefined> =
@@ -319,4 +321,22 @@ export async function accionReiniciarDemo() {
     await sembrarDemo(ctx.db, { ahora: new Date() });
     return undefined;
   }, "Datos de la demo reiniciados");
+}
+
+// ---------------------------------------------------------------------------
+// Asistente virtual (Yanapa): solo lee, no modifica nada
+// ---------------------------------------------------------------------------
+/**
+ * Responde una consulta del asistente. Funciona también sin usuario (en
+ * /ingresar): ahí contesta lo general y pide elegir un rol para los datos.
+ */
+export async function accionAsistente(consulta: ConsultaAsistente): Promise<ResultadoAccion<Respuesta>> {
+  try {
+    const datos = await responderConsulta(await getDb(), await usuarioActual(), limpiarConsulta(consulta));
+    return { ok: true, datos };
+  } catch (e) {
+    unstable_rethrow(e);
+    console.error(e);
+    return { ok: false, error: "No pude responder ahora. Probá de nuevo en un momento." };
+  }
 }

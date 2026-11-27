@@ -2,6 +2,7 @@ import Link from "next/link";
 import { FlaskConicalIcon } from "lucide-react";
 import { Buscador } from "@/components/app/buscador";
 import { Marca, PieSDE } from "@/components/app/marca";
+import { Asistente } from "@/components/asistente/asistente";
 import { Navegacion } from "@/components/app/navegacion";
 import { SelectorUsuario } from "@/components/app/selector-usuario";
 import { getDb } from "@/lib/db";
@@ -50,6 +51,7 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
       </header>
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6">{children}</main>
       <PieSDE />
+      <Asistente usuario={{ nombre: usuario.nombre, rol: usuario.rol }} />
     </div>
   );
 }

@@ -98,6 +98,22 @@ Tomada de [sde.gob.ar](https://sde.gob.ar/): barra y pie en azul institucional c
 
 Los colores de cada rol (`ROL_INFO`) y de los estados no cambian: sirven para distinguir áreas. Los SVG se importan desde `src/assets` (no desde `/public`) para que Next les agregue el `basePath` de la VPS.
 
+### Asistente virtual (Yanapa)
+
+Botón flotante abajo a la derecha, en todas las pantallas de la app y en `/ingresar`. Su nombre viene de «yanapay», *ayudar* en quichua santiagueño, y su marca es el sol de ocho puntas del escudo. **No usa servicios de IA**: las respuestas salen de las reglas y constantes del sistema (si cambia un plazo, cambia la respuesta) y de los datos de la demo.
+
+| Pieza | Dónde |
+| --- | --- |
+| Preguntas prearmadas, palabras clave, respuestas fijas, sugerencias por rol y pantalla | `src/lib/asistente/conocimiento.ts` (puro) |
+| Respuestas con datos: pendientes por rol, vencimientos, resumen del día, citaciones, el expediente de la ficha, búsqueda por número/CUIL/DNI/apellido, adjuntos y audios | `src/lib/asistente/responder.ts` (solo lee) → `accionAsistente` en `src/app/acciones.ts` |
+| Widget: panel, burbujas, todas las preguntas por tema | `src/components/asistente/` |
+| Audios: graba con MediaRecorder y transcribe con el reconocimiento de voz del navegador (Chrome, Edge, Safari); si no puede, lo avisa | `use-grabador.ts` |
+| Tests | `tests/asistente.test.ts` |
+
+- La conversación vive en `sessionStorage`: sigue al navegar, al cambiar de rol (avisa «Ahora estás como…» y cambia las sugerencias) y al recargar. Los audios y las imágenes no se guardan ni se suben: del adjunto se mandan nombre, tipo y tamaño.
+- Para sumar una pregunta: una entrada en `INTENCIONES` (pregunta, tema, claves y `responder` o `datos: true`) y un caso en el test de reconocimiento.
+- La transcripción de Chrome usa el servicio de voz de Google. En el sistema real conviene definir dónde se procesan los audios (datos de salud).
+
 ### Piezas compartidas (`src/components/comun`)
 
 | Pieza | Uso |
